@@ -33,6 +33,7 @@ public class Packet4TileEntityMedicalResearchTable extends ImmunPacket{
 			tile.entityname = name;
 			for(int j = 0; j < count; j++)
 			{
+				int pos = iStream.readInt();
 				int diseaseid = iStream.readInt();
 				int stage = iStream.readInt();
 				int duration = iStream.readInt();
@@ -40,7 +41,7 @@ public class Packet4TileEntityMedicalResearchTable extends ImmunPacket{
 				disease.setLoad(false);
 				disease.setDuration(duration);
 				disease.setStage(stage);
-				tile.entityDiseases.put(Integer.valueOf(disease.getdiseaseID()), disease);
+				tile.entityDiseases.put(Integer.valueOf(pos), disease);
 			}
 			
 			

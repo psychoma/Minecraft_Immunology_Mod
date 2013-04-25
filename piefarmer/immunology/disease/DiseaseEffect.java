@@ -16,6 +16,8 @@ public class DiseaseEffect {
 	public static DiseaseEffect chickenSpots = new EffectSpots(2, 1, 1);
 	public static DiseaseEffect cough = new EffectCough(3, 0, 0);
 	public static DiseaseEffect fever = new EffectFever(4, 0, 0);
+	public static DiseaseEffect headache = new EffectHeadache(5, 0, 0);
+	public static DiseaseEffect chills = new EffectChills(6, 0, 0);
 	
 	protected Random rand = new Random();
 	

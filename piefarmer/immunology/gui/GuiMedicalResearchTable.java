@@ -43,7 +43,9 @@ public class GuiMedicalResearchTable extends GuiContainer{
 		super(new ContainerMedicalResearchTable(player, tileentity));
 		entityplayer = player.player;
 		tile = tileentity;
-		this.getDiseases();
+		this.Entitydiseases = new ArrayList<Disease>(tile.entityDiseases.values());
+		float size = this.Entitydiseases.size();
+		this.pageSetup(size);
 	}
 	@Override
 	public void initGui()
@@ -187,7 +189,6 @@ public class GuiMedicalResearchTable extends GuiContainer{
 			}
 			break;
 		case 5:
-			this.tile.setEntityName(entityplayer.username, entityplayer, entityplayer.getActiveDiseases());
 			this.getDiseases();
 			break;
 			
@@ -196,24 +197,25 @@ public class GuiMedicalResearchTable extends GuiContainer{
 	}
 	private void setDiseasesDisplay()
 	{
-		Iterator var1 = this.Entitydiseases.iterator();
 		int count = 0;
-    	while(var1.hasNext())
-    	{
-    		Disease var2 = (Disease)var1.next();
-    		Disease disease = Disease.diseaseTypes[var2.getdiseaseID()];
-    		int i = mc.renderEngine.getTexture("/Immunology/diseases.png");
-    		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-    		mc.renderEngine.bindTexture(i);
-    		drawTexturedModalRect(posX + 20, posY + 44 + (29 * disease.getStatusIconIndex()), 16 * disease.getStatusIconIndex(), 0, 17, 17 );
-    		this.drawCenteredString(fontRenderer, disease.getName(), posX + 83, posY + 45 + (29 * disease.getStatusIconIndex()), 0xffffff);
-    		this.diseases[count] = disease;
-    		count++;
-    		if(count == 3)
-    		{
-    			break;
-    		}
-    	}
+		if(currentPage > 0)
+		{
+			for(int i = this.currentPage - 1; i < 3 * this.currentPage; i++)
+			{
+				if(i < this.Entitydiseases.size())
+				{
+					Disease var2 = this.Entitydiseases.get(i);
+					Disease disease = Disease.diseaseTypes[var2.getdiseaseID()];
+					int j = mc.renderEngine.getTexture("/Immunology/diseases.png");
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+					mc.renderEngine.bindTexture(j);
+					drawTexturedModalRect(posX + 20, posY + 44 + (29 * count), 16 * disease.getStatusIconIndex(), 0, 17, 17 );
+    				this.drawCenteredString(fontRenderer, disease.getName(), posX + 83, posY + 45 + (29 * count), 0xffffff);
+    				this.diseases[count] = disease;
+    				count++;
+				}
+			}
+		}
 	}
 	private void setTopDisease(Disease disease)
 	{
@@ -232,11 +234,20 @@ public class GuiMedicalResearchTable extends GuiContainer{
 	}
 	public void getDiseases()
 	{
-		int[] effects = entityplayer.getDiseaseEffects();
-		Entitydiseases = Disease.getDiseasesByEffects(effects);
-		float size = Entitydiseases.size();
+		int[] effects = this.entityplayer.getDiseaseEffects();
+		this.Entitydiseases = Disease.getDiseasesByEffects(effects);
+		float size = this.Entitydiseases.size();
+		this.tile.setEntityName(entityplayer.username, entityplayer, this.Entitydiseases);
+		this.pageSetup(size);
+	}
+	public void pageSetup(float size)
+	{
 		maxPages = (int) Math.ceil(size / 3);
 		currentPage = 1;
+		if(maxPages == 0)
+		{
+			currentPage = 0;
+		}
 	}
 
 

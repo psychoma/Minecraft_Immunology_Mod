@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -147,7 +148,7 @@ public class TileEntityMedicalResearchTable extends TileEntity implements IInven
         	{
         		NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
         		Disease var5 = Disease.readCustomDiseaseFromNBT(var4);
-        		this.entityDiseases.put(Integer.valueOf(var5.getdiseaseID()), var5);
+        		this.entityDiseases.put(Integer.valueOf(var3), var5);
         	}
         }
 	}
@@ -191,14 +192,13 @@ public class TileEntityMedicalResearchTable extends TileEntity implements IInven
 	{
 		
 	}
-	public void setEntityName(String name, EntityPlayer player, Collection collection)
+	public void setEntityName(String name, EntityPlayer player, List list)
 	{
 		this.entityname = name;
-		Iterator var1 = collection.iterator();
-    	while(var1.hasNext())
+    	for(int i = 0; i < list.size(); i++)
     	{
-    		Disease var2 = (Disease)var1.next();
-    		entityDiseases.put(var2.getdiseaseID(), var2);
+    		Disease var2 = (Disease)list.get(i);
+    		entityDiseases.put(i, var2);
     	}
 		this.sendPacket(player);
 	}
@@ -231,12 +231,15 @@ public class TileEntityMedicalResearchTable extends TileEntity implements IInven
 			dos.writeChars(name);
 			dos.writeInt(this.entityDiseases.size());
 			Iterator var8 = this.entityDiseases.values().iterator();
+			int count = 0;
         	while (var8.hasNext())
         	{
         		Disease var5 = (Disease)var8.next();
+        		dos.writeInt(count);
         		dos.writeInt(var5.getdiseaseID());
     			dos.writeInt(var5.getStage());
     			dos.writeInt(var5.getDuration());
+    			count++;
         	}
 			
 		} catch (IOException e) {
